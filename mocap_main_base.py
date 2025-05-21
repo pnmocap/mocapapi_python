@@ -16,7 +16,7 @@ class MCPBase:
         # Enable BVH data transformation
         settings.set_bvh_transformation(MCPBvhDisplacement.Enable)
         # Set rotation order to YZX
-        settings.set_bvh_rotation(MCPBvhRotation.YZX)
+        settings.set_bvh_rotation(MCPBvhRotation.YXZ)
         # Configure UDP data transmission address and port
         settings.SetSettingsUDPEx('10.42.0.101', 8002)
         settings.SetSettingsUDPServer('10.42.0.202', 8080)
@@ -39,6 +39,8 @@ class MCPBase:
             return 'Reset 0 Motion Drift'
         elif self.current_command == EMCPCommand.CommandResumeOriginalPosture:
             return 'Resume Body'
+        elif self.current_command == EMCPCommand.CommandZeroPosition:
+            return 'Zero Position'
         else:
             return 'None'
 
@@ -168,6 +170,8 @@ class MCPBase:
                     main.running_command(EMCPCommand.CommandClearZeroMotionDrift)     
                 elif key_name == 'o':
                     main.running_command(EMCPCommand.CommandResumeOriginalPosture)     
+                elif key_name == 'z':
+                    main.running_command(EMCPCommand.CommandZeroPosition)     
             except AttributeError:
                 if key == key.esc:
                     print("ESC key pressed, exiting program")
@@ -176,5 +180,5 @@ class MCPBase:
         # Start keyboard listener
         with Listener(on_press=on_key_press) as listener:
             asyncio.run_coroutine_threadsafe(main.update(), loop)  # Start event update
-            print("Press N to Start Capture,  C to calibrate, R to Resume Hands, 0 to Reset 0 Motion Drift, O to Resume Body, F to Stop Capture,press ESC to exit program")
+            print("Press N to Start Capture,  C to calibrate, R to Resume Hands, 0 to Reset 0 Motion Drift, O to Resume Body, Z ti Zero Position, F to Stop Capture,press ESC to exit program")
             await loop.run_in_executor(None, listener.join)  # Wait for listener to exit
